@@ -58,19 +58,24 @@
             const btnCloseModal = document.getElementById('btn-close-modal');
             const hardcoreOptions = document.getElementById('hardcore-options');
 
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const code = urlParams.get('code');
+
             let quizData = await loadAndDecryptQuizData();
             
-            if (!quizData) {
+            if (!quizData || !code) {
                 loading.textContent = 'เกิดข้อผิดพลาดในการโหลดข้อมูล';
                 return;
             }
-
+          
             loading.style.display = 'none';
             gridContainer.style.display = 'grid';
 
             // Group by 'group' field
             const groups = {};
-            quizData.forEach(q => {
+            const subGroups = quizData.filter(q => q.id == code);
+            subGroups.forEach(q => {
                 if (!groups[q.group]) {
                     groups[q.group] = [];
                 }
