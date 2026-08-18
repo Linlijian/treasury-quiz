@@ -30,7 +30,11 @@
                 
                 config.forEach(item => {
                     const a = document.createElement('a');
-                    a.href = `${item.link}?id=${item.id}`;
+                    let linkPath = item.link;
+                    if (linkPath.startsWith('/')) {
+                        linkPath = linkPath.substring(1);
+                    }
+                    a.href = `${linkPath}?id=${item.id}`;
                     a.className = 'btn-card glass';
                     a.innerHTML = `
                         <h3>${item.name}</h3>

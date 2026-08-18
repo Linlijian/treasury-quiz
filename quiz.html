@@ -124,7 +124,9 @@
                 ui.qText.textContent = q.question;
                 
                 if (q.image && q.image.trim() !== '') {
-                    ui.qImage.src = `image/${q.image}`;
+                    // Append .png if the database does not have an extension
+                    const imgName = q.image.includes('.') ? q.image : `${q.image}.png`;
+                    ui.qImage.src = `image/${imgName}`;
                     ui.qImage.style.display = 'block';
                 } else {
                     ui.qImage.style.display = 'none';
