@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>คลังข้อสอบ</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- PapaParse for CSV parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+    <div class="container glass">
+        <header class="header">
+            <h1 class="title">คลังข้อสอบ</h1>
+            <div>
+                <a href="index.html" class="btn btn-back" style="margin-right: 0.5rem;">กลับ</a>
+                <button id="theme-toggle" class="theme-toggle" style="display: inline-flex;">🌙</button>
+            </div>
+        </header>
+        
+        <main>
+            <div id="grid-container" class="grid">
+                <!-- Books will be injected here -->
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const targetId = params.get('id');
+            const gridContainer = document.getElementById('grid-container');
+
+            if (!targetId) {
+                gridContainer.innerHTML = '<p>ไม่พบรหัสอ้างอิง</p>';
+                return;
+            }
+
+            Papa.parse('treasury.csv', {
+                download: true,
+                header: true,
+                complete: function(results) {
+                    const data = results.data;
+                    const filtered = data.filter(row => row.id === targetId);
+
+                    if (filtered.length === 0) {
+                        gridContainer.innerHTML = '<p>ไม่มีข้อมูลสำหรับหมวดหมู่นี้</p>';
+                        return;
+                    }
+
+                    filtered.forEach(item => {
+                        const a = document.createElement('a');
+                        a.href = `quizset.html?code=${item.code}`;
+                        a.className = 'book-card glass';
+                        a.innerHTML = `
+                            <h4>${item.name}</h4>
+                        `;
+                        gridContainer.appendChild(a);
+                    });
+                },
+                error: function(err) {
+                    console.error("Error parsing CSV:", err);
+                    gridContainer.innerHTML = '<p class="text-danger">เกิดข้อผิดพลาดในการอ่านข้อมูล</p>';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

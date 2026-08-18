@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Web App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container glass">
+        <header class="header">
+            <h1 class="title">Quiz Web App</h1>
+            <button id="theme-toggle" class="theme-toggle">🌙</button>
+        </header>
+        
+        <main>
+            <div id="menu-container" class="flex-list">
+                <!-- Menu items will be injected here -->
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const menuContainer = document.getElementById('menu-container');
+            try {
+                const res = await fetch('config.json');
+                const config = await res.json();
+                
+                config.forEach(item => {
+                    const a = document.createElement('a');
+                    a.href = `${item.link}?id=${item.id}`;
+                    a.className = 'btn-card glass';
+                    a.innerHTML = `
+                        <h3>${item.name}</h3>
+                        <p>${item.decs}</p>
+                    `;
+                    menuContainer.appendChild(a);
+                });
+            } catch (err) {
+                console.error('Failed to load config:', err);
+                menuContainer.innerHTML = '<p class="text-danger">ไม่สามารถโหลดข้อมูลได้</p>';
+            }
+        });
+    </script>
+</body>
+</html>

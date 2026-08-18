@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เลือกชุดคำถาม</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="container glass">
+        <header class="header" style="flex-direction: column; align-items: stretch; gap: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h1 class="title">ชุดคำถาม</h1>
+                <div>
+                    <button class="btn btn-back" onclick="window.history.back()" style="margin-right: 0.5rem;">กลับ</button>
+                    <button id="theme-toggle" class="theme-toggle" style="display: inline-flex;">🌙</button>
+                </div>
+            </div>
+            
+            <div class="controls-header glass">
+                <label class="checkbox-wrapper">
+                    <input type="checkbox" id="shuffle-checkbox">
+                    สุ่มตัวเลือก
+                </label>
+                <button class="btn btn-danger" id="btn-hardcore">Hardcore Mode</button>
+            </div>
+        </header>
+
+        <main>
+            <div id="loading" style="text-align: center;">กำลังโหลดข้อมูล...</div>
+            <div id="grid-container" class="grid" style="display: none;">
+                <!-- Quiz sets will be injected here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Hardcore Modal -->
+    <div class="modal-overlay" id="hardcore-modal">
+        <div class="modal-content glass">
+            <h3>เลือกจำนวนข้อ</h3>
+            <div class="hardcore-options" id="hardcore-options">
+                <!-- Options injected by JS -->
+            </div>
+            <button class="btn btn-back" id="btn-close-modal" style="width: 100%; margin-top: 1rem;">ยกเลิก</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const loading = document.getElementById('loading');
+            const gridContainer = document.getElementById('grid-container');
+            const shuffleCheckbox = document.getElementById('shuffle-checkbox');
+            const btnHardcore = document.getElementById('btn-hardcore');
+            const modal = document.getElementById('hardcore-modal');
+            const btnCloseModal = document.getElementById('btn-close-modal');
+            const hardcoreOptions = document.getElementById('hardcore-options');
+
+            let quizData = await loadAndDecryptQuizData();
+            
+            if (!quizData) {
+                loading.textContent = 'เกิดข้อผิดพลาดในการโหลดข้อมูล';
+                return;
+            }
+
+            loading.style.display = 'none';
+            gridContainer.style.display = 'grid';
+
+            // Group by 'group' field
+            const groups = {};
+            quizData.forEach(q => {
+                if (!groups[q.group]) {
+                    groups[q.group] = [];
+                }
+                groups[q.group].push(q);
+            });
+
+            // Display standard sets
+            Object.keys(groups).forEach(groupId => {
+                const a = document.createElement('a');
+                a.href = '#';
+                a.className = 'book-card glass';
+                
+                // Add Highscore Badge if exists
+                let highScoreHtml = '';
+                const highscore = getHighScore(groupId);
+                if (highscore > 0) {
+                    highScoreHtml = `<div class="score-badge" style="position: absolute; top: 10px; right: 10px; font-size: 0.8rem; background: var(--success);">${highscore}</div>`;
+                }
+
+                a.innerHTML = `
+                    ${highScoreHtml}
+                    <h4>ชุดที่ ${groupId}</h4>
+                    <p style="font-size: 0.8rem; margin-top: 0.5rem; color: var(--text-muted);">${groups[groupId].length} ข้อ</p>
+                `;
+                a.onclick = (e) => {
+                    e.preventDefault();
+                    startQuiz(groupId, false);
+                };
+                gridContainer.appendChild(a);
+            });
+
+            // Hardcore Mode setup
+            const options = [5, 10, 15, 20, 30, 40, 50];
+            options.forEach(num => {
+                const btn = document.createElement('button');
+                btn.className = 'btn';
+                btn.style.padding = '0.5rem';
+                btn.textContent = num;
+                btn.onclick = () => {
+                    startQuiz('all', true, num);
+                };
+                hardcoreOptions.appendChild(btn);
+            });
+
+            btnHardcore.onclick = () => modal.classList.add('active');
+            btnCloseModal.onclick = () => modal.classList.remove('active');
+            
+            function startQuiz(groupId, isHardcore, limit = 0) {
+                const shuffleOptions = shuffleCheckbox.checked;
+                const params = new URLSearchParams();
+                params.set('group', groupId);
+                params.set('hardcore', isHardcore);
+                if (isHardcore) params.set('limit', limit);
+                params.set('shuffle', shuffleOptions);
+
+                window.location.href = `quiz.html?${params.toString()}`;
+            }
+        });
+    </script>
+</body>
+</html>
