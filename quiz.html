@@ -45,7 +45,8 @@
             <div id="result-interface" class="result-container glass" style="display: none;">
                 <h2>ผลคะแนนของคุณ</h2>
                 <div class="result-score" id="result-score">0 / 0</div>
-                <button class="btn" onclick="window.history.back()">กลับไปหน้าเลือกชุดคำถาม</button>
+                <button class="btn" id="btn-review" style="background: var(--accent); margin-bottom: 0.5rem; display: block; width: 100%;">ดูเฉลย</button>
+                <button class="btn" onclick="window.history.back()" style="display: block; width: 100%;">กลับไปหน้าเลือกชุดคำถาม</button>
             </div>
         </main>
     </div>
@@ -72,7 +73,8 @@
                 btnNext: document.getElementById('btn-next'),
                 btnSubmit: document.getElementById('btn-submit'),
                 btnQuit: document.getElementById('btn-quit'),
-                resScore: document.getElementById('result-score')
+                resScore: document.getElementById('result-score'),
+                btnReview: document.getElementById('btn-review')
             };
 
             ui.btnQuit.onclick = () => window.history.back();
@@ -207,6 +209,24 @@
                 if (!isHardcore) {
                     setHighScore(groupId, score);
                 }
+            };
+
+            ui.btnReview.onclick = () => {
+                ui.resultInterface.style.display = 'none';
+                ui.quizInterface.style.display = 'flex';
+                currentIndex = 0;
+                
+                // Show score badge
+                const scoreBadge = document.getElementById('score-badge');
+                scoreBadge.style.display = 'inline-block';
+                scoreBadge.textContent = `คะแนน: ${ui.resScore.textContent}`;
+
+                // Change submit button to return button
+                ui.btnSubmit.textContent = 'ออกจากโหมดดูเฉลย';
+                ui.btnSubmit.style.background = 'var(--text-muted)';
+                ui.btnSubmit.onclick = () => window.history.back();
+
+                renderQuestion();
             };
 
             renderQuestion();
