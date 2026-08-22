@@ -66,10 +66,20 @@ function getHighScore(groupId) {
 
 // Set Highscore to LocalStorage
 function setHighScore(groupId, score) {
-    const current = getHighScore(groupId);
-    if (score > current) {
+    const current = localStorage.getItem(`highscore_group_${groupId}`);
+    if (current === null || score > parseInt(current)) {
         localStorage.setItem(`highscore_group_${groupId}`, score);
     }
+}
+
+// Hardcore stats management
+function getHardcoreStats() {
+    const statsStr = localStorage.getItem('hardcore_latest');
+    return statsStr ? JSON.parse(statsStr) : null;
+}
+
+function setHardcoreStats(selected, correct) {
+    localStorage.setItem('hardcore_latest', JSON.stringify({ selected, correct }));
 }
 
 document.addEventListener('DOMContentLoaded', initTheme);

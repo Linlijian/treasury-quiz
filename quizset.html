@@ -26,6 +26,7 @@
                 </label>
                 <button class="btn btn-danger" id="btn-hardcore">Hardcore Mode</button>
             </div>
+            <div id="summary-container"></div>
         </header>
 
         <main>
@@ -82,6 +83,9 @@
                 groups[q.group].push(q);
             });
 
+            // Render summary graph
+            renderSummaryGraph(subGroups, groups);
+
             // Display standard sets
             Object.keys(groups).forEach(groupId => {
                 const a = document.createElement('a');
@@ -132,6 +136,75 @@
                 params.set('shuffle', shuffleOptions);
 
                 window.location.href = `quiz.html?${params.toString()}`;
+            }
+
+            function renderSummaryGraph(quizDataArray, groupData) {
+                let totalCompleted = 0;
+                let totalCorrect = 0;
+                let totalSystemQuestions = quizDataArray.length;
+
+                Object.keys(groupData).forEach(groupId => {
+                    const scoreStr = localStorage.getItem(`highscore_group_${groupId}`);
+                    if (scoreStr !== null) {
+                        totalCompleted += groupData[groupId].length;
+                        totalCorrect += parseInt(scoreStr);
+                    }
+                });
+
+                const completionPercent = totalSystemQuestions > 0 ? (totalCompleted / totalSystemQuestions) * 100 : 0;
+                const accuracyPercent = totalCompleted > 0 ? (totalCorrect / totalCompleted) * 100 : 0;
+                const isGlobalPass = accuracyPercent >= 60;
+                
+                let html = `
+                    <div class="summary-graph glass">
+                        <h3>ภาพรวมการทำข้อสอบ (โหมดปกติ)</h3>
+                        <div class="stat-row">
+                            <div class="stat-row-header">
+                                <span>ทำข้อสอบแล้ว</span>
+                                <span>${totalCompleted} / ${totalSystemQuestions} ข้อ</span>
+                            </div>
+                            <div class="progress-bg">
+                                <div class="progress-fill primary" style="width: ${completionPercent}%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-row">
+                            <div class="stat-row-header">
+                                <span>ความถูกต้อง</span>
+                                <span>${totalCorrect} / ${totalCompleted} ข้อ (${accuracyPercent.toFixed(1)}%)</span>
+                            </div>
+                            <div class="progress-bg">
+                                <div class="progress-fill ${totalCompleted === 0 ? 'primary' : (isGlobalPass ? 'success' : 'danger')}" style="width: ${accuracyPercent}%"></div>
+                            </div>
+                            <div class="stat-status ${totalCompleted === 0 ? '' : (isGlobalPass ? 'text-success' : 'text-danger')}">
+                                ${totalCompleted === 0 ? 'ยังไม่มีข้อมูล' : 'สถานะ: ' + (isGlobalPass ? '🟢 ผ่านเกณฑ์ 60%' : '🔴 ไม่ผ่านเกณฑ์')}
+                            </div>
+                        </div>
+                `;
+
+                const hardcoreStats = getHardcoreStats();
+                if (hardcoreStats) {
+                    const hcPercent = (hardcoreStats.correct / hardcoreStats.selected) * 100;
+                    const isHcPass = hcPercent >= 60;
+                    html += `
+                        <hr style="margin: 1.5rem 0; border-color: rgba(128,128,128,0.2);">
+                        <h3>โหมด Hardcore (ล่าสุด)</h3>
+                        <div class="stat-row">
+                            <div class="stat-row-header">
+                                <span>ความถูกต้อง</span>
+                                <span>${hardcoreStats.correct} / ${hardcoreStats.selected} ข้อ (${hcPercent.toFixed(1)}%)</span>
+                            </div>
+                            <div class="progress-bg">
+                                <div class="progress-fill ${isHcPass ? 'success' : 'danger'}" style="width: ${hcPercent}%"></div>
+                            </div>
+                            <div class="stat-status ${isHcPass ? 'text-success' : 'text-danger'}">
+                                สถานะ: ${isHcPass ? '🟢 ผ่านเกณฑ์ 60%' : '🔴 ไม่ผ่านเกณฑ์'}
+                            </div>
+                        </div>
+                    `;
+                }
+                html += `</div>`;
+                document.getElementById('summary-container').innerHTML = html;
             }
         });
     </script>
