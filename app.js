@@ -60,26 +60,26 @@ function shuffleArray(array) {
 }
 
 // Get Highscore from LocalStorage
-function getHighScore(groupId) {
-    return localStorage.getItem(`highscore_group_${groupId}`) || 0;
+function getHighScore(groupId, code) {
+    return localStorage.getItem(`highscore_group_${groupId}_code_${code}`) || 0;
 }
 
 // Set Highscore to LocalStorage
-function setHighScore(groupId, score) {
-    const current = localStorage.getItem(`highscore_group_${groupId}`);
+function setHighScore(groupId, code, score) {
+    const current = localStorage.getItem(`highscore_group_${groupId}_code_${code}`);
     if (current === null || score > parseInt(current)) {
-        localStorage.setItem(`highscore_group_${groupId}`, score);
+        localStorage.setItem(`highscore_group_${groupId}_code_${code}`, score);
     }
 }
 
 // Hardcore stats management
-function getHardcoreStats() {
-    const statsStr = localStorage.getItem('hardcore_latest');
+function getHardcoreStats(groupId, code) {
+    const statsStr = localStorage.getItem(`hardcore_group_${groupId}_code_${code}`);
     return statsStr ? JSON.parse(statsStr) : null;
 }
 
-function setHardcoreStats(selected, correct) {
-    localStorage.setItem('hardcore_latest', JSON.stringify({ selected, correct }));
+function setHardcoreStats(groupId, code, selected, correct) {
+    localStorage.setItem(`hardcore_group_${groupId}_code_${code}`, JSON.stringify({ selected, correct }));
 }
 
 document.addEventListener('DOMContentLoaded', initTheme);

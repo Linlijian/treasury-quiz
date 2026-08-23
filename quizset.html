@@ -74,6 +74,7 @@
             gridContainer.style.display = 'grid';
 
             // Group by 'group' field
+            let groupId = null;
             const groups = {};
             const subGroups = quizData.filter(q => q.id == code);
             subGroups.forEach(q => {
@@ -81,6 +82,10 @@
                     groups[q.group] = [];
                 }
                 groups[q.group].push(q);
+
+                if(groupId === null) {
+                    groupId = q.group;
+                }
             });
 
             // Render summary graph
@@ -88,13 +93,14 @@
 
             // Display standard sets
             Object.keys(groups).forEach(groupId => {
+                console.log(`Rendering group ${groupId} with ${groups[groupId].length} questions`);
                 const a = document.createElement('a');
                 a.href = '#';
                 a.className = 'book-card glass';
                 
                 // Add Highscore Badge if exists
                 let highScoreHtml = '';
-                const highscore = getHighScore(groupId);
+                const highscore = getHighScore(groupId, code);
                 if (highscore > 0) {
                     highScoreHtml = `<div class="score-badge" style="position: absolute; top: 10px; right: 10px; font-size: 0.8rem; background: var(--success);">${highscore}</div>`;
                 }
@@ -119,7 +125,7 @@
                 btn.style.padding = '0.5rem';
                 btn.textContent = num;
                 btn.onclick = () => {
-                    startQuiz('all', true, num);
+                    startQuiz(groupId, true, num);
                 };
                 hardcoreOptions.appendChild(btn);
             });
@@ -132,6 +138,7 @@
                 const params = new URLSearchParams();
                 params.set('group', groupId);
                 params.set('hardcore', isHardcore);
+                params.set('code', code);
                 if (isHardcore) params.set('limit', limit);
                 params.set('shuffle', shuffleOptions);
 
@@ -144,7 +151,7 @@
                 let totalSystemQuestions = quizDataArray.length;
 
                 Object.keys(groupData).forEach(groupId => {
-                    const scoreStr = localStorage.getItem(`highscore_group_${groupId}`);
+                    const scoreStr = localStorage.getItem(`highscore_group_${groupId}_code_${code}`);
                     if (scoreStr !== null) {
                         totalCompleted += groupData[groupId].length;
                         totalCorrect += parseInt(scoreStr);
@@ -182,7 +189,7 @@
                         </div>
                 `;
 
-                const hardcoreStats = getHardcoreStats();
+                const hardcoreStats = getHardcoreStats(groupId, code);
                 if (hardcoreStats) {
                     const hcPercent = (hardcoreStats.correct / hardcoreStats.selected) * 100;
                     const isHcPass = hcPercent >= 60;

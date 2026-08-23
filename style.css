@@ -479,3 +479,14 @@ body {
 }
 .text-success { color: var(--success); }
 .text-danger { color: var(--danger); }
+
+.question-desc {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--secondary);
+    border-left: 4px solid var(--primary);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    color: var(--text-main);
+    line-height: 1.5;
+}
