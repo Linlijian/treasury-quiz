@@ -154,7 +154,7 @@
             function renderQuestion() {
                 const q = questions[currentIndex];
                 ui.progress.textContent = `ข้อ ${currentIndex + 1} / ${questions.length}`;
-                ui.qText.textContent = q.question;
+                ui.qText.innerHTML = q.question;
 
                 if (q.image && q.image.trim() !== '') {
                     // Append .png if the database does not have an extension
@@ -169,7 +169,7 @@
                 q.options.forEach((optText, index) => {
                     const btn = document.createElement('button');
                     btn.className = 'option-btn';
-                    btn.textContent = `${index + 1}. ${optText}`;
+                    btn.innerHTML = `${index + 1}. ${optText}`;
 
                     if (userAnswers[currentIndex] === index + 1) {
                         btn.classList.add('selected');
