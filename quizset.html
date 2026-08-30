@@ -3,34 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>เลือกชุดคำถาม</title>
+    <meta name="theme-color" content="#b8860b">
+    <title>เลือกชุดคำถาม | Treasury Quiz</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div class="container glass">
-        <header class="header" style="flex-direction: column; align-items: stretch; gap: 1rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h1 class="title">ชุดคำถาม</h1>
-                <div>
-                    <button class="btn btn-back" onclick="window.history.back()" style="margin-right: 0.5rem;">กลับ</button>
-                    <button id="theme-toggle" class="theme-toggle" style="display: inline-flex;">🌙</button>
+        <header class="header" style="flex-direction: column; align-items: stretch; gap: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: .75rem;">
+                    <img src="favicon.svg" alt="" width="44" height="44" style="border-radius: 12px;">
+                    <div>
+                        <h1 class="title">ชุดคำถาม</h1>
+                        <p style="color: var(--text-muted); font-size: .9rem;">เลือกชุดที่ต้องการฝึก</p>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: .5rem;">
+                    <button class="btn btn-back" onclick="window.history.back()">← กลับ</button>
+                    <button id="theme-toggle" class="theme-toggle" aria-label="สลับธีมสว่าง/มืด" title="สลับธีม">🌙</button>
                 </div>
             </div>
-            
+
             <div class="controls-header glass">
                 <label class="checkbox-wrapper">
                     <input type="checkbox" id="shuffle-checkbox">
-                    สุ่มตัวเลือก
+                    <span>🔀 สุ่มตัวเลือก</span>
                 </label>
-                <button class="btn btn-danger" id="btn-hardcore">Hardcore Mode</button>
+                <button class="btn btn-danger" id="btn-hardcore">🔥 Hardcore Mode</button>
             </div>
             <div id="summary-container"></div>
         </header>
 
         <main>
-            <div id="loading" style="text-align: center;">กำลังโหลดข้อมูล...</div>
+            <div id="loading" class="loading-state">กำลังโหลดข้อมูล...</div>
             <div id="grid-container" class="grid" style="display: none;">
                 <!-- Quiz sets will be injected here -->
             </div>
@@ -38,13 +47,13 @@
     </div>
 
     <!-- Hardcore Modal -->
-    <div class="modal-overlay" id="hardcore-modal">
+    <div class="modal-overlay" id="hardcore-modal" role="dialog" aria-modal="true" aria-labelledby="hardcore-title">
         <div class="modal-content glass">
-            <h3>เลือกจำนวนข้อ</h3>
+            <h3 id="hardcore-title">🔥 เลือกจำนวนข้อ</h3>
             <div class="hardcore-options" id="hardcore-options">
                 <!-- Options injected by JS -->
             </div>
-            <button class="btn btn-back" id="btn-close-modal" style="width: 100%; margin-top: 1rem;">ยกเลิก</button>
+            <button class="btn btn-back" id="btn-close-modal" style="width: 100%;">ยกเลิก</button>
         </div>
     </div>
 
@@ -64,12 +73,16 @@
             const code = urlParams.get('code');
 
             let quizData = await loadAndDecryptQuizData();
-            
+
             if (!quizData || !code) {
+                loading.classList.remove('loading-state');
+                loading.style.textAlign = 'center';
+                loading.style.padding = '2rem';
+                loading.className = 'text-danger';
                 loading.textContent = 'เกิดข้อผิดพลาดในการโหลดข้อมูล';
                 return;
             }
-          
+
             loading.style.display = 'none';
             gridContainer.style.display = 'grid';
 
@@ -93,22 +106,21 @@
 
             // Display standard sets
             Object.keys(groups).forEach(groupId => {
-                console.log(`Rendering group ${groupId} with ${groups[groupId].length} questions`);
                 const a = document.createElement('a');
                 a.href = '#';
                 a.className = 'book-card glass';
-                
+
                 // Add Highscore Badge if exists
                 let highScoreHtml = '';
                 const highscore = getHighScore(groupId, code);
                 if (highscore > 0) {
-                    highScoreHtml = `<div class="score-badge" style="position: absolute; top: 10px; right: 10px; font-size: 0.8rem; background: var(--success);">${highscore}</div>`;
+                    highScoreHtml = `<div class="card-badge" title="คะแนนสูงสุด">⭐ ${highscore}</div>`;
                 }
 
                 a.innerHTML = `
                     ${highScoreHtml}
                     <h4>ชุดที่ ${groupId}</h4>
-                    <p style="font-size: 0.8rem; margin-top: 0.5rem; color: var(--text-muted);">${groups[groupId].length} ข้อ</p>
+                    <p style="font-size: 0.85rem; margin-top: 0.4rem; color: var(--text-muted);">${groups[groupId].length} ข้อ</p>
                 `;
                 a.onclick = (e) => {
                     e.preventDefault();
@@ -122,7 +134,7 @@
             options.forEach(num => {
                 const btn = document.createElement('button');
                 btn.className = 'btn';
-                btn.style.padding = '0.5rem';
+                btn.style.padding = '0.6rem 0.25rem';
                 btn.textContent = num;
                 btn.onclick = () => {
                     startQuiz(groupId, true, num);
@@ -130,9 +142,23 @@
                 hardcoreOptions.appendChild(btn);
             });
 
-            btnHardcore.onclick = () => modal.classList.add('active');
-            btnCloseModal.onclick = () => modal.classList.remove('active');
-            
+            function closeModal() {
+                modal.classList.remove('active');
+                btnHardcore.focus();
+            }
+
+            btnHardcore.onclick = () => {
+                modal.classList.add('active');
+                btnCloseModal.focus();
+            };
+            btnCloseModal.onclick = closeModal;
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
+            });
+
             function startQuiz(groupId, isHardcore, limit = 0) {
                 const shuffleOptions = shuffleCheckbox.checked;
                 const params = new URLSearchParams();
@@ -161,10 +187,10 @@
                 const completionPercent = totalSystemQuestions > 0 ? (totalCompleted / totalSystemQuestions) * 100 : 0;
                 const accuracyPercent = totalCompleted > 0 ? (totalCorrect / totalCompleted) * 100 : 0;
                 const isGlobalPass = accuracyPercent >= 60;
-                
+
                 let html = `
                     <div class="summary-graph glass">
-                        <h3>ภาพรวมการทำข้อสอบ (โหมดปกติ)</h3>
+                        <h3>📊 ภาพรวมการทำข้อสอบ (โหมดปกติ)</h3>
                         <div class="stat-row">
                             <div class="stat-row-header">
                                 <span>ทำข้อสอบแล้ว</span>
@@ -174,7 +200,7 @@
                                 <div class="progress-fill primary" style="width: ${completionPercent}%"></div>
                             </div>
                         </div>
-                        
+
                         <div class="stat-row">
                             <div class="stat-row-header">
                                 <span>ความถูกต้อง</span>
@@ -194,8 +220,8 @@
                     const hcPercent = (hardcoreStats.correct / hardcoreStats.selected) * 100;
                     const isHcPass = hcPercent >= 60;
                     html += `
-                        <hr style="margin: 1.5rem 0; border-color: rgba(128,128,128,0.2);">
-                        <h3>โหมด Hardcore (ล่าสุด)</h3>
+                        <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--border);">
+                        <h3>🔥 โหมด Hardcore (ล่าสุด)</h3>
                         <div class="stat-row">
                             <div class="stat-row-header">
                                 <span>ความถูกต้อง</span>

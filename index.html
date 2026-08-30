@@ -3,19 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Web App</title>
+    <meta name="description" content="คลังข้อสอบออนไลน์ — ฝึกทำข้อสอบแยกตามหมวดหมู่ พร้อมสรุปคะแนนและโหมด Hardcore">
+    <meta name="theme-color" content="#b8860b">
+    <title>คลังสมบัติข้อสอบ | Treasury Quiz</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container glass">
         <header class="header">
-            <h1 class="title">Quiz Web App</h1>
-            <button id="theme-toggle" class="theme-toggle">🌙</button>
+            <div>
+                <img src="favicon.svg" alt="" width="44" height="44" style="border-radius: 12px;">
+                <div>
+                    <h1 class="title">คลังสมบัติข้อสอบ</h1>
+                    <p style="color: var(--text-muted); font-size: .9rem;">เลือกหมวดหมู่ที่ต้องการฝึกทำ</p>
+                </div>
+            </div>
+            <button id="theme-toggle" class="theme-toggle" aria-label="สลับธีมสว่าง/มืด" title="สลับธีม">🌙</button>
         </header>
-        
+
         <main>
             <div id="menu-container" class="flex-list">
-                <!-- Menu items will be injected here -->
+                <div class="loading-state">กำลังโหลดหมวดหมู่...</div>
             </div>
         </main>
     </div>
@@ -27,7 +38,9 @@
             try {
                 const res = await fetch('config.json');
                 const config = await res.json();
-                
+
+                menuContainer.innerHTML = '';
+
                 config.forEach(item => {
                     const a = document.createElement('a');
                     let linkPath = item.link;
@@ -44,7 +57,7 @@
                 });
             } catch (err) {
                 console.error('Failed to load config:', err);
-                menuContainer.innerHTML = '<p class="text-danger">ไม่สามารถโหลดข้อมูลได้</p>';
+                menuContainer.innerHTML = '<p class="text-danger" style="text-align:center; padding:2rem;">ไม่สามารถโหลดข้อมูลได้</p>';
             }
         });
     </script>
