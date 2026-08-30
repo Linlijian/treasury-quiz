@@ -3,12 +3,12 @@
         "id": 1,
         "name": "กฏหมาย",
         "decs": "พรบ. กฏ ข้อบังคับ",
-        "link": "/treasury.html"
+        "link": "treasury.html"
     },
     {
         "id": 2,
         "name": "สาขาอาชีพ",
         "decs": "อาชีพที่เจาะจงจะสอบ",
-        "link": "/treasury.html"
+        "link": "treasury.html"
     }
 ]
