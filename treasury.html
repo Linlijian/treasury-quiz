@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>คลังข้อสอบ</title>
+    <meta name="theme-color" content="#b8860b">
+    <title>คลังข้อสอบ | Treasury Quiz</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="style.css">
     <!-- PapaParse for CSV parsing -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
@@ -11,17 +15,24 @@
 <body>
     <div class="container glass">
         <header class="header">
-            <h1 class="title">คลังข้อสอบ</h1>
             <div>
-                <a href="index.html" class="btn btn-back" style="margin-right: 0.5rem;">กลับ</a>
-                <button id="theme-toggle" class="theme-toggle" style="display: inline-flex;">🌙</button>
+                <img src="favicon.svg" alt="" width="44" height="44" style="border-radius: 12px;">
+                <div>
+                    <h1 class="title">คลังข้อสอบ</h1>
+                    <p style="color: var(--text-muted); font-size: .9rem;">เลือกวิชาที่ต้องการ</p>
+                </div>
+            </div>
+            <div>
+                <a href="index.html" class="btn btn-back">← กลับ</a>
+                <button id="theme-toggle" class="theme-toggle" aria-label="สลับธีมสว่าง/มืด" title="สลับธีม">🌙</button>
             </div>
         </header>
-        
+
         <main>
             <div id="grid-container" class="grid">
                 <!-- Books will be injected here -->
             </div>
+            <div id="loading" class="loading-state">กำลังโหลดรายวิชา...</div>
         </main>
     </div>
 
@@ -31,9 +42,16 @@
             const params = new URLSearchParams(window.location.search);
             const targetId = params.get('id');
             const gridContainer = document.getElementById('grid-container');
+            const loading = document.getElementById('loading');
+
+            function showMessage(text, isError) {
+                loading.style.display = 'none';
+                gridContainer.innerHTML =
+                    `<p class="${isError ? 'text-danger' : ''}" style="grid-column:1/-1; text-align:center; padding:2rem; color:${isError ? '' : 'var(--text-muted)'};">${text}</p>`;
+            }
 
             if (!targetId) {
-                gridContainer.innerHTML = '<p>ไม่พบรหัสอ้างอิง</p>';
+                showMessage('ไม่พบรหัสอ้างอิง', true);
                 return;
             }
 
@@ -45,9 +63,11 @@
                     const filtered = data.filter(row => row.id === targetId);
 
                     if (filtered.length === 0) {
-                        gridContainer.innerHTML = '<p>ไม่มีข้อมูลสำหรับหมวดหมู่นี้</p>';
+                        showMessage('ไม่มีข้อมูลสำหรับหมวดหมู่นี้', false);
                         return;
                     }
+
+                    loading.style.display = 'none';
 
                     filtered.forEach(item => {
                         const a = document.createElement('a');
@@ -61,7 +81,7 @@
                 },
                 error: function(err) {
                     console.error("Error parsing CSV:", err);
-                    gridContainer.innerHTML = '<p class="text-danger">เกิดข้อผิดพลาดในการอ่านข้อมูล</p>';
+                    showMessage('เกิดข้อผิดพลาดในการอ่านข้อมูล', true);
                 }
             });
         });

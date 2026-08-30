@@ -1,33 +1,86 @@
-@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* ==========================================================================
+   Treasury Quiz — Design Tokens
+   ธีม "คลังสมบัติ": ทอง (gold) + มรกต (emerald) + น้ำตาลเข้ม (deep brown)
+   ========================================================================== */
 
 :root {
-  --bg-color: #f0f4f8;
-  --card-bg: rgba(255, 255, 255, 0.85);
-  --text-main: #1e293b;
-  --text-muted: #64748b;
-  --primary: #3b82f6;
-  --primary-hover: #2563eb;
-  --secondary: #f1f5f9;
-  --secondary-hover: #e2e8f0;
-  --accent: #f59e0b;
-  --success: #22c55e;
-  --danger: #ef4444;
-  --border: rgba(255, 255, 255, 0.5);
-  --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+  /* Surfaces */
+  --bg-color: #f7f3ea;
+  --bg-gradient-1: rgba(201, 162, 39, 0.16);
+  --bg-gradient-2: rgba(15, 118, 110, 0.12);
+  --card-bg: rgba(255, 253, 248, 0.82);
+  --bg-card: var(--card-bg);
+  --surface-solid: #fffdf8;
+
+  /* Text */
+  --text-main: #2e2418;
+  --text-muted: #7a6a55;
+
+  /* Brand */
+  --primary: #b8860b;          /* ทองเข้ม — ผ่าน contrast บนพื้นขาว */
+  --primary-hover: #96690a;
+  --primary-soft: rgba(184, 134, 11, 0.12);
+  --accent: #0f766e;           /* มรกต */
+  --accent-hover: #0d5f59;
+  --gold-glow: rgba(201, 162, 39, 0.35);
+
+  /* Neutral controls */
+  --secondary: #efe7d8;
+  --secondary-hover: #e4d8c2;
+
+  /* Semantic */
+  --success: #15803d;
+  --success-soft: rgba(21, 128, 61, 0.12);
+  --danger: #c0392b;
+  --danger-soft: rgba(192, 57, 43, 0.12);
+
+  /* Structure */
+  --border: rgba(184, 134, 11, 0.22);
+  --border-strong: rgba(184, 134, 11, 0.45);
+  --radius: 18px;
+  --radius-sm: 12px;
+  --shadow: 0 10px 30px -8px rgba(70, 50, 20, 0.18);
+  --shadow-lg: 0 22px 45px -12px rgba(70, 50, 20, 0.28);
+  --ring: 0 0 0 3px var(--gold-glow);
 }
 
-.dark-mode {
-  --bg-color: #0f172a;
-  --card-bg: rgba(30, 41, 59, 0.7);
-  --text-main: #f8fafc;
-  --text-muted: #cbd5e1;
-  --primary: #60a5fa;
-  --primary-hover: #3b82f6;
-  --secondary: #334155;
-  --secondary-hover: #475569;
-  --border: rgba(255, 255, 255, 0.1);
-  --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+body.dark-mode {
+  --bg-color: #14110d;
+  --bg-gradient-1: rgba(229, 199, 107, 0.14);
+  --bg-gradient-2: rgba(52, 211, 153, 0.10);
+  --card-bg: rgba(35, 30, 24, 0.78);
+  --bg-card: var(--card-bg);
+  --surface-solid: #221d17;
+
+  --text-main: #f5efe2;
+  --text-muted: #b6a68d;
+
+  --primary: #e5c76b;
+  --primary-hover: #f0d78c;
+  --primary-soft: rgba(229, 199, 107, 0.14);
+  --accent: #34d399;
+  --accent-hover: #5ee7b4;
+  --gold-glow: rgba(229, 199, 107, 0.28);
+
+  --secondary: #332c23;
+  --secondary-hover: #443a2d;
+
+  --success: #4ade80;
+  --success-soft: rgba(74, 222, 128, 0.14);
+  --danger: #f87171;
+  --danger-soft: rgba(248, 113, 113, 0.14);
+
+  --border: rgba(229, 199, 107, 0.18);
+  --border-strong: rgba(229, 199, 107, 0.38);
+  --shadow: 0 10px 30px -8px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 22px 45px -12px rgba(0, 0, 0, 0.75);
 }
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
 
 * {
   margin: 0;
@@ -35,107 +88,206 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  font-family: 'Sarabun', sans-serif;
+  font-family: 'Noto Sans Thai', 'Inter', system-ui, -apple-system, sans-serif;
   background-color: var(--bg-color);
+  background-image:
+    radial-gradient(900px circle at 12% -10%, var(--bg-gradient-1), transparent 55%),
+    radial-gradient(800px circle at 92% 8%, var(--bg-gradient-2), transparent 50%);
+  background-attachment: fixed;
   color: var(--text-main);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color .35s ease, color .35s ease;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Glassmorphism Classes */
+::selection {
+  background: var(--primary-soft);
+  color: var(--text-main);
+}
+
+/* Focus ring ที่มองเห็นได้ทุก interactive element (accessibility) */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+/* ==========================================================================
+   Layout & Surfaces
+   ========================================================================== */
+
 .glass {
   background: var(--card-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: var(--radius);
   box-shadow: var(--shadow);
 }
 
 .container {
-  max-width: 800px;
+  max-width: 880px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 2.5rem 1.25rem 4rem;
   width: 100%;
+  animation: page-in .5s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+/* container ที่เป็น .glass ด้วย ให้เป็นแผ่นพื้นหลังโปร่งไม่มีกรอบทึบ */
+.container.glass {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
   margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.header > div {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
 }
 
 .title {
-  font-size: 2rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, var(--primary), var(--accent));
+  font-size: clamp(1.6rem, 4.5vw, 2.3rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  background: linear-gradient(120deg, var(--primary) 0%, #d4af37 45%, var(--accent) 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
+  padding-bottom: .15rem;
+}
+
+/* fallback ให้เครื่องที่ไม่รองรับ background-clip:text */
+@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+  .title {
+    -webkit-text-fill-color: currentColor;
+    color: var(--primary);
+    background: none;
+  }
+}
+
+.title::before {
+  content: '';
 }
 
 .theme-toggle {
   background: var(--secondary);
-  border: none;
+  border: 1px solid var(--border);
   border-radius: 50%;
   width: 44px;
   height: 44px;
+  min-width: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   color: var(--text-main);
-  transition: all 0.2s ease;
-  font-size: 1.2rem;
+  transition: transform .25s cubic-bezier(.34, 1.56, .64, 1), background .2s ease, box-shadow .2s ease;
+  font-size: 1.15rem;
+  line-height: 1;
 }
 
 .theme-toggle:hover {
   background: var(--secondary-hover);
-  transform: scale(1.05);
+  transform: rotate(-15deg) scale(1.08);
+  box-shadow: var(--ring);
 }
 
-/* Flex List for Index */
+.theme-toggle:active {
+  transform: scale(.94);
+}
+
+/* ==========================================================================
+   Index — Category cards
+   ========================================================================== */
+
 .flex-list {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.1rem;
 }
 
 .btn-card {
   display: flex;
   flex-direction: column;
-  padding: 1.5rem;
+  padding: 1.6rem 1.75rem;
   text-decoration: none;
   color: var(--text-main);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform .28s cubic-bezier(.22, 1, .36, 1), box-shadow .28s ease, border-color .28s ease;
   cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  animation: rise-in .5s cubic-bezier(.22, 1, .36, 1) both;
 }
 
-.btn-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.2);
-  border-color: var(--primary);
+/* แถบทองด้านซ้ายที่ยืดออกเมื่อ hover */
+.btn-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 5px;
+  background: linear-gradient(180deg, var(--primary), var(--accent));
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform .3s cubic-bezier(.22, 1, .36, 1);
+}
+
+.btn-card:hover,
+.btn-card:focus-visible {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--border-strong);
+}
+
+.btn-card:hover::before,
+.btn-card:focus-visible::before {
+  transform: scaleY(1);
 }
 
 .btn-card h3 {
-  font-size: 1.25rem;
-  margin-bottom: 0.5rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: .35rem;
   color: var(--primary);
+  letter-spacing: -0.01em;
 }
 
 .btn-card p {
-  font-size: 0.9rem;
+  font-size: .95rem;
   color: var(--text-muted);
 }
 
-/* Grid for Treasury */
+/* ==========================================================================
+   Grid — Book / quiz-set cards
+   ========================================================================== */
+
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+  gap: 1.35rem;
 }
 
 .book-card {
@@ -144,44 +296,71 @@ body {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 1.5rem 1rem;
+  padding: 1.5rem 1rem 1.5rem 1.7rem;
   cursor: pointer;
   text-decoration: none;
   color: var(--text-main);
-  aspect-ratio: 3/4;
+  aspect-ratio: 3 / 4;
   position: relative;
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: transform .3s cubic-bezier(.22, 1, .36, 1), box-shadow .3s ease, border-color .3s ease;
+  animation: rise-in .5s cubic-bezier(.22, 1, .36, 1) both;
 }
 
+/* สันหนังสือสีทอง */
 .book-card::before {
   content: '';
   position: absolute;
   left: 0;
   top: 0;
   bottom: 0;
-  width: 15px;
-  background: rgba(0,0,0,0.1);
-  border-right: 1px solid rgba(255,255,255,0.2);
+  width: 14px;
+  background: linear-gradient(180deg, var(--primary), #8a6508);
+  border-right: 1px solid rgba(255, 255, 255, .25);
 }
 
-.book-card:hover {
-  transform: scale(1.05) rotate(2deg);
-  box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.2);
+/* ประกายทองที่วิ่งผ่านตอน hover */
+.book-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 35%, var(--gold-glow) 50%, transparent 65%);
+  transform: translateX(-120%);
+  transition: transform .65s ease;
+  pointer-events: none;
+}
+
+.book-card:hover,
+.book-card:focus-visible {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--border-strong);
+}
+
+.book-card:hover::after,
+.book-card:focus-visible::after {
+  transform: translateX(120%);
 }
 
 .book-card h4 {
   font-size: 1rem;
   font-weight: 600;
+  line-height: 1.45;
 }
 
-/* Controls Header (Quizset) */
+.book-card p {
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Controls / Buttons
+   ========================================================================== */
+
 .controls-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
-  padding: 1rem;
+  padding: 1rem 1.25rem;
   flex-wrap: wrap;
   gap: 1rem;
 }
@@ -189,144 +368,471 @@ body {
 .checkbox-wrapper {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: .6rem;
   cursor: pointer;
+  font-weight: 500;
+  user-select: none;
 }
 
 .checkbox-wrapper input {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   cursor: pointer;
+  accent-color: var(--primary);
 }
 
 .btn {
-  padding: 0.6rem 1.2rem;
-  border: none;
-  border-radius: 8px;
+  padding: .7rem 1.35rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
   font-family: inherit;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: transform .18s cubic-bezier(.34, 1.56, .64, 1), background .2s ease, box-shadow .2s ease;
   font-size: 1rem;
-  background: var(--primary);
+  background: linear-gradient(135deg, var(--primary), var(--primary-hover));
   color: #fff;
+  box-shadow: 0 6px 16px -6px var(--gold-glow);
+  line-height: 1.4;
+}
+
+body.dark-mode .btn {
+  color: #1a1610;
 }
 
 .btn:hover {
-  background: var(--primary-hover);
+  background: linear-gradient(135deg, var(--primary-hover), var(--primary));
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px -8px var(--gold-glow);
+}
+
+.btn:active {
+  transform: translateY(0) scale(.98);
+}
+
+.btn:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .btn-danger {
-  background: var(--danger);
+  background: linear-gradient(135deg, var(--danger), #96281b);
+  color: #fff;
+  box-shadow: 0 6px 16px -6px var(--danger-soft);
+}
+
+body.dark-mode .btn-danger {
+  color: #1a1610;
 }
 
 .btn-danger:hover {
-  background: #dc2626;
+  background: linear-gradient(135deg, #96281b, var(--danger));
 }
 
-/* Quiz Interface */
+.btn-back {
+  background: var(--secondary);
+  color: var(--text-main);
+  border-color: var(--border);
+  box-shadow: none;
+}
+
+body.dark-mode .btn-back {
+  color: var(--text-main);
+}
+
+.btn-back:hover {
+  background: var(--secondary-hover);
+  box-shadow: none;
+}
+
+/* ==========================================================================
+   Quiz interface
+   ========================================================================== */
+
 .quiz-container {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-}
-
-.question-card {
-  padding: 1.5rem;
+  gap: 1.35rem;
 }
 
 .question-header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
+  align-items: center;
+  gap: 1rem;
+  font-size: .92rem;
+  font-weight: 600;
   color: var(--text-muted);
 }
 
+/* Progress bar ด้านบนของข้อสอบ */
+.quiz-progress {
+  height: 10px;
+  width: 100%;
+  background: var(--secondary);
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, .12);
+}
+
+.quiz-progress-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--primary), #d4af37, var(--accent));
+  background-size: 200% 100%;
+  transition: width .45s cubic-bezier(.22, 1, .36, 1);
+  animation: shimmer 3s linear infinite;
+}
+
+.question-card {
+  padding: 1.75rem;
+}
+
+/* transition ระหว่างข้อ (fade + slide) — JS เติมคลาสนี้ใหม่ทุกครั้งที่ render */
+.question-card.q-enter {
+  animation: q-slide-in .38s cubic-bezier(.22, 1, .36, 1) both;
+}
+
 .score-badge {
-  background: var(--accent);
+  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
   color: #fff;
-  padding: 0.3rem 0.8rem;
-  border-radius: 20px;
-  font-weight: bold;
+  padding: .35rem .9rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: .85rem;
+  white-space: nowrap;
+}
+
+body.dark-mode .score-badge {
+  color: #10251d;
 }
 
 .question-text {
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
-  line-height: 1.5;
+  font-size: 1.22rem;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+  line-height: 1.7;
+  letter-spacing: -0.005em;
 }
 
 .question-image {
   max-width: 100%;
-  border-radius: 8px;
-  margin-bottom: 1rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 1.25rem;
   display: none;
+  border: 1px solid var(--border);
 }
 
 .options-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0.8rem;
+  gap: .85rem;
 }
 
 .option-btn {
-  padding: 1rem;
-  border: 1px solid var(--border);
+  padding: 1rem 1.15rem;
+  border: 1.5px solid var(--border);
   background: var(--secondary);
   color: var(--text-main);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   text-align: left;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: transform .18s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
   font-size: 1rem;
   font-family: inherit;
+  line-height: 1.6;
+  position: relative;
 }
 
-.option-btn:hover {
+.option-btn:hover:not(:disabled) {
   background: var(--secondary-hover);
-  border-color: var(--primary);
+  border-color: var(--border-strong);
+  transform: translateX(4px);
+  box-shadow: var(--shadow);
+}
+
+.option-btn:active:not(:disabled) {
+  transform: scale(.99);
 }
 
 .option-btn.selected {
-  background: var(--primary);
-  color: #fff;
+  background: var(--primary-soft);
   border-color: var(--primary);
+  color: var(--text-main);
+  font-weight: 600;
+  box-shadow: var(--ring);
+  animation: pop .25s cubic-bezier(.34, 1.56, .64, 1);
 }
 
 .option-btn.correct {
-  background: var(--success);
-  color: #fff;
+  background: var(--success-soft);
   border-color: var(--success);
+  color: var(--text-main);
+  font-weight: 600;
+  animation: pop .35s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+.option-btn.correct::after {
+  content: '✓';
+  float: right;
+  margin-left: .75rem;
+  color: var(--success);
+  font-weight: 800;
 }
 
 .option-btn.wrong {
-  background: var(--danger);
-  color: #fff;
+  background: var(--danger-soft);
   border-color: var(--danger);
+  color: var(--text-main);
+  font-weight: 600;
+  animation: shake .4s ease;
+}
+
+.option-btn.wrong::after {
+  content: '✕';
+  float: right;
+  margin-left: .75rem;
+  color: var(--danger);
+  font-weight: 800;
+}
+
+.option-btn:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+.question-desc {
+  margin-top: 1.25rem;
+  padding: 1.1rem 1.25rem;
+  background: var(--primary-soft);
+  border-left: 4px solid var(--primary);
+  border-radius: var(--radius-sm);
+  font-size: .95rem;
+  color: var(--text-main);
+  line-height: 1.7;
+  animation: fade-in .4s ease both;
 }
 
 .nav-buttons {
   display: flex;
   justify-content: space-between;
-  margin-top: 1rem;
+  gap: .75rem;
+  margin-top: .5rem;
 }
 
-/* Modal */
+/* ==========================================================================
+   Result page
+   ========================================================================== */
+
+.result-container {
+  text-align: center;
+  padding: 2.5rem 1.75rem;
+  animation: rise-in .5s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.result-container h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: .35rem;
+}
+
+.result-ring {
+  position: relative;
+  width: 190px;
+  height: 190px;
+  margin: 1.5rem auto 1.25rem;
+}
+
+.result-ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.result-ring .ring-track {
+  fill: none;
+  stroke: var(--secondary);
+  stroke-width: 12;
+}
+
+.result-ring .ring-fill {
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 12;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1.1s cubic-bezier(.22, 1, .36, 1), stroke .4s ease;
+}
+
+.result-ring .ring-fill.pass {
+  stroke: var(--success);
+}
+
+.result-ring .ring-fill.fail {
+  stroke: var(--danger);
+}
+
+.result-ring-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .1rem;
+}
+
+.result-percent {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.result-score {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.result-emoji {
+  font-size: 2.6rem;
+  line-height: 1;
+  display: block;
+  margin-bottom: .35rem;
+  animation: pop .5s cubic-bezier(.34, 1.56, .64, 1) both;
+}
+
+.result-message {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: .35rem;
+}
+
+.result-submessage {
+  font-size: .95rem;
+  color: var(--text-muted);
+  margin-bottom: 1.75rem;
+}
+
+.result-actions {
+  display: flex;
+  flex-direction: column;
+  gap: .7rem;
+  max-width: 380px;
+  margin: 0 auto;
+}
+
+.result-actions .btn {
+  width: 100%;
+}
+
+.btn-accent {
+  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+  color: #fff;
+  box-shadow: 0 6px 16px -6px rgba(15, 118, 110, .5);
+}
+
+body.dark-mode .btn-accent {
+  color: #10251d;
+}
+
+.btn-accent:hover {
+  background: linear-gradient(135deg, var(--accent-hover), var(--accent));
+}
+
+/* ==========================================================================
+   Summary graph (quizset)
+   ========================================================================== */
+
+.summary-graph {
+  margin-top: 1.25rem;
+  padding: 1.5rem;
+}
+
+.summary-graph h3 {
+  margin-bottom: 1.1rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-align: left;
+}
+
+.stat-row {
+  margin-bottom: 1.15rem;
+}
+
+.stat-row:last-child {
+  margin-bottom: 0;
+}
+
+.stat-row-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: .4rem;
+  font-size: .9rem;
+  font-weight: 600;
+}
+
+.progress-bg {
+  width: 100%;
+  height: 12px;
+  background: var(--secondary);
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, .12);
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width .8s cubic-bezier(.22, 1, .36, 1);
+}
+
+.progress-fill.primary {
+  background: linear-gradient(90deg, var(--primary), #d4af37);
+}
+
+.progress-fill.success {
+  background: linear-gradient(90deg, var(--success), var(--accent));
+}
+
+.progress-fill.danger {
+  background: linear-gradient(90deg, var(--danger), #e67e22);
+}
+
+.stat-status {
+  margin-top: .5rem;
+  font-size: .85rem;
+  text-align: right;
+  font-weight: 700;
+}
+
+.text-success { color: var(--success); }
+.text-danger { color: var(--danger); }
+
+/* ==========================================================================
+   Modals
+   ========================================================================== */
+
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0,0,0,0.5);
+  inset: 0;
+  background: rgba(25, 18, 8, .55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease;
+  transition: opacity .3s ease;
+  padding: 1rem;
 }
 
 .modal-overlay.active {
@@ -335,158 +841,268 @@ body {
 }
 
 .modal-content {
-  width: 90%;
-  max-width: 400px;
+  width: 100%;
+  max-width: 420px;
   padding: 2rem;
   text-align: center;
+  transform: translateY(16px) scale(.97);
+  transition: transform .35s cubic-bezier(.22, 1, .36, 1);
+}
+
+.modal-overlay.active .modal-content {
+  transform: translateY(0) scale(1);
 }
 
 .modal-content h3 {
   margin-bottom: 1.5rem;
+  font-size: 1.2rem;
+  font-weight: 700;
 }
 
 .hardcore-options {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: .6rem;
+  margin-bottom: 1rem;
 }
 
-/* Back button global */
-.btn-back {
-  background: var(--secondary);
-  color: var(--text-main);
-}
-.btn-back:hover {
-  background: var(--secondary-hover);
-}
-
-.result-container {
-  text-align: center;
-  padding: 2rem;
-}
-.result-score {
-  font-size: 3rem;
-  font-weight: bold;
-  color: var(--primary);
-  margin: 1rem 0;
-}
-
-/* Modal Container */
+/* Fullscreen image modal */
 .image-modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.85);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 1rem;
-    box-sizing: border-box;
+  position: fixed;
+  z-index: 1200;
+  inset: 0;
+  background-color: rgba(20, 15, 8, .92);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  animation: fade-in .25s ease both;
 }
 
-/* Modal Image (Responsive for PC & Mobile) */
 #modal-content {
-    max-width: 90%;
-    max-height: 90vh;
-    object-fit: contain;
-    border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+  max-width: 92%;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, .6);
 }
 
-/* Close Button */
 #modal-close {
-    position: absolute;
-    top: 20px;
-    right: 30px;
-    color: #fff;
-    font-size: 40px;
-    font-weight: bold;
-    cursor: pointer;
-    z-index: 1001;
-    user-select: none;
+  position: absolute;
+  top: 16px;
+  right: 22px;
+  color: #fff;
+  font-size: 2.4rem;
+  font-weight: 300;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 1201;
+  user-select: none;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background .2s ease, transform .2s ease;
 }
 
 #modal-close:hover {
-    color: #ccc;
+  background: rgba(255, 255, 255, .15);
+  transform: scale(1.08);
 }
 
-/* Make question image look clickable */
 #question-image {
-    cursor: pointer;
-    transition: opacity 0.2s;
+  cursor: zoom-in;
+  transition: opacity .2s ease, transform .2s ease;
 }
 
 #question-image:hover {
-    opacity: 0.9;
+  opacity: .92;
+  transform: scale(1.01);
 }
-/* Summary Graph */
-.summary-graph {
-    margin-top: 1.5rem;
-    padding: 1.5rem;
-    border-radius: var(--radius);
-    background: var(--bg-card);
-}
-.summary-graph h3 {
-    margin-bottom: 1rem;
-    font-size: 1.1rem;
-    color: var(--primary);
-    text-align: left;
-}
-.stat-row {
-    margin-bottom: 1rem;
-}
-.stat-row-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.25rem;
-    font-size: 0.9rem;
-    font-weight: 500;
-}
-.progress-bg {
-    width: 100%;
-    height: 12px;
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 6px;
-    overflow: hidden;
-}
-.dark-mode .progress-bg {
-    background: rgba(255, 255, 255, 0.1);
-}
-.progress-fill {
-    height: 100%;
-    border-radius: 6px;
-    transition: width 0.5s ease-in-out;
-}
-.progress-fill.primary {
-    background: var(--primary);
-}
-.progress-fill.success {
-    background: var(--success);
-}
-.progress-fill.danger {
-    background: var(--danger);
-}
-.stat-status {
-    margin-top: 0.5rem;
-    font-size: 0.85rem;
-    text-align: right;
-    font-weight: bold;
-}
-.text-success { color: var(--success); }
-.text-danger { color: var(--danger); }
 
-.question-desc {
-    margin-top: 1rem;
-    padding: 1rem;
-    background: var(--secondary);
-    border-left: 4px solid var(--primary);
-    border-radius: 6px;
-    font-size: 0.95rem;
-    color: var(--text-main);
-    line-height: 1.5;
+/* ==========================================================================
+   Loading state
+   ========================================================================== */
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .9rem;
+  padding: 3rem 1rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.loading-state::before {
+  content: '';
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 3px solid var(--secondary);
+  border-top-color: var(--primary);
+  animation: spin .8s linear infinite;
+}
+
+/* ==========================================================================
+   Animations
+   ========================================================================== */
+
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes q-slide-in {
+  from { opacity: 0; transform: translateX(22px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes pop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.025); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-6px); }
+  40%      { transform: translateX(6px); }
+  60%      { transform: translateX(-4px); }
+  80%      { transform: translateX(4px); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  from { background-position: 0% 0; }
+  to   { background-position: 200% 0; }
+}
+
+/* stagger การ์ดตอนโหลดหน้า */
+.flex-list > *:nth-child(1), .grid > *:nth-child(1) { animation-delay: .04s; }
+.flex-list > *:nth-child(2), .grid > *:nth-child(2) { animation-delay: .08s; }
+.flex-list > *:nth-child(3), .grid > *:nth-child(3) { animation-delay: .12s; }
+.flex-list > *:nth-child(4), .grid > *:nth-child(4) { animation-delay: .16s; }
+.flex-list > *:nth-child(5), .grid > *:nth-child(5) { animation-delay: .20s; }
+.flex-list > *:nth-child(6), .grid > *:nth-child(6) { animation-delay: .24s; }
+.flex-list > *:nth-child(n+7), .grid > *:nth-child(n+7) { animation-delay: .28s; }
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 640px) {
+  .container {
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .header {
+    margin-bottom: 1.5rem;
+  }
+
+  .question-card,
+  .summary-graph,
+  .result-container {
+    padding: 1.25rem;
+  }
+
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1rem;
+  }
+
+  .btn-card {
+    padding: 1.25rem 1.35rem;
+  }
+
+  .option-btn {
+    padding: .9rem 1rem;
+  }
+
+  .nav-buttons .btn {
+    flex: 1;
+  }
+
+  .result-ring {
+    width: 160px;
+    height: 160px;
+  }
+
+  .result-percent {
+    font-size: 2.1rem;
+  }
+
+  .hardcore-options {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .controls-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .controls-header .btn {
+    width: 100%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: 940px;
+  }
+}
+
+/* เคารพการตั้งค่าลดการเคลื่อนไหวของผู้ใช้ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Badge บนการ์ด (คะแนนสูงสุด) */
+.card-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1;
+  background: linear-gradient(135deg, var(--success), var(--accent));
+  color: #fff;
+  font-size: .75rem;
+  font-weight: 700;
+  padding: .2rem .55rem;
+  border-radius: 999px;
+  box-shadow: var(--shadow);
+  white-space: nowrap;
+}
+
+body.dark-mode .card-badge {
+  color: #10251d;
+}
+
+/* summary-container อยู่ใน .header จึงต้อง reset จากกฎ .header > div */
+#summary-container {
+  display: block;
+  width: 100%;
 }

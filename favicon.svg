@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f0d78c"/>
+      <stop offset="1" stop-color="#b8860b"/>
+    </linearGradient>
+    <linearGradient id="w" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5b4128"/>
+      <stop offset="1" stop-color="#3b2a19"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#221d17"/>
+  <!-- chest lid -->
+  <path d="M12 28a20 20 0 0 1 40 0z" fill="url(#w)"/>
+  <path d="M12 28a20 20 0 0 1 40 0z" fill="none" stroke="url(#g)" stroke-width="2.5"/>
+  <!-- chest body -->
+  <rect x="12" y="28" width="40" height="22" rx="3" fill="url(#w)" stroke="url(#g)" stroke-width="2.5"/>
+  <!-- gold band -->
+  <rect x="10" y="26" width="44" height="5" rx="2.5" fill="url(#g)"/>
+  <!-- lock -->
+  <rect x="28" y="31" width="8" height="10" rx="2" fill="url(#g)"/>
+  <circle cx="32" cy="35" r="1.8" fill="#3b2a19"/>
+  <!-- sparkle -->
+  <path d="M48 12l1.6 4.4L54 18l-4.4 1.6L48 24l-1.6-4.4L42 18l4.4-1.6z" fill="#f0d78c"/>
+</svg>
